@@ -1,5 +1,5 @@
-applicationName: $$CD_APP##
-deploymentGroupName: $$CD_GROUP_NAME##
+applicationName: &&CD_APP&&
+deploymentGroupName: &&CD_GROUP_NAME&&
 revision:
   revisionType: AppSpecContent
   appSpecContent:
@@ -9,7 +9,7 @@ revision:
         - TargetService:
             Type: AWS::ECS::Service
             Properties:
-              TaskDefinition: $$TASK_DEF$$
+              TaskDefinition: &&TASK_DEF&&
               LoadBalancerInfo:
-                ContainerName: $$CONTAINER_NAME$$
-                ContainerPort: $$CONTAINER_PORT$$
+                ContainerName: &&CONTAINER_NAME&&
+                ContainerPort: &&CONTAINER_PORT&&

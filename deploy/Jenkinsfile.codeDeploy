@@ -2,9 +2,15 @@ pipeline {
     agent any
 
     environment {
+        // codeDeploy
+        CD_APP = "todolist-codeDeploy"
+        CD_GROUP_NAME ="bluegreen-deploy"
+
+        // ECR
         REGION = "ap-northeast-2"
         ECR_REPOSITORY = "182024812696.dkr.ecr.${env.REGION}.amazonaws.com/todolist-repository"
 
+        // ECS
         ECS_CLUSTER = "todolist-cluster-codedeploy"
         ECS_SERVICE = "todolist-container"
         ECS_TASK_DEF = "todolist-codedeploy-family"
@@ -55,13 +61,25 @@ pipeline {
                             // def revision = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn'").trim()
 
                             def output = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn, .taskDefinition.containerDefinitions[0].name, .taskDefinition.containerDefinitions[0].portMappings[0].containerPort'").trim()
-                            echo "${output}"
+                            def lines = output.split("\n")
 
+                            echo "CodeDeploy >> ${lines}"
 
+                            def taskDef = lines[0]
+                            def containerName = lines[1]
+                            def containerPort = lines[2]
 
-                            // echo "${revision}"
+                            // Read to Json file
+                            def specFile = "appspec.yml"
+                            def content = readFile(file: specFile)
+                            writeFile(file: specFile, content.replace("&&CD_APP&&", env.CD_APP))
+                            writeFile(file: specFile, content.replace("&&CD_GROUP_NAME&&", env.CD_GROUP_NAME))
+                            writeFile(file: specFile, content.replace("&&TASK_DEF&&", taskDef))
+                            writeFile(file: specFile, content.replace("&&CONTAINER_NAME&&", containerName))
+                            writeFile(file: specFile, content.replace("&&CONTAINER_PORT&&", containerPort))
 
-                            // sh "aws deploy create-deployment --application-name YourCodeDeployApplicationName --deployment-group-name YourDeploymentGroupName --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
+                            sh "cat appspec.yml"
+                            sh "aws deploy create-deployment --application-name ${env.CD_APP} --deployment-group-name ${env.CD_GROUP_NAME} --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
                         }
                     }
                 }
