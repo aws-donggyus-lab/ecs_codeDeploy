@@ -69,14 +69,15 @@ pipeline {
                             def containerName = lines[1]
                             def containerPort = lines[2]
 
-                            // Read to Json file
+                            // Read and modify appspec.yml
                             def specFile = "appspec.yml"
                             def content = readFile(file: specFile)
-                            writeFile(file: specFile, text: content.replace("&&CD_APP&&", env.CD_APP))
-                            writeFile(file: specFile, text: content.replace("&&CD_GROUP_NAME&&", env.CD_GROUP_NAME))
-                            writeFile(file: specFile, text: content.replace("&&TASK_DEF&&", taskDef))
-                            writeFile(file: specFile, text: content.replace("&&CONTAINER_NAME&&", containerName))
-                            writeFile(file: specFile, text: content.replace("&&CONTAINER_PORT&&", containerPort))
+                            content = content.replace("&&CD_APP&&", env.CD_APP)
+                            content = content.replace("&&CD_GROUP_NAME&&", env.CD_GROUP_NAME)
+                            content = content.replace("&&TASK_DEF&&", taskDef)
+                            content = content.replace("&&CONTAINER_NAME&&", containerName)
+                            content = content.replace("&&CONTAINER_PORT&&", containerPort)
+                            writeFile(file: specFile, text: content)
 
                             sh """
                                 cat appspec.yml
