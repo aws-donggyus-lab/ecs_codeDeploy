@@ -84,7 +84,7 @@ pipeline {
                                 aws deploy create-deployment \
                                     --application-name ${env.CD_APP} \
                                     --deployment-group-name ${env.CD_GROUP_NAME} \
-                                    --cli-input-yaml file:appspec.yaml \
+                                    --cli-input-yaml file://appspec.yaml \
                                     --region ${env.REGION}
                             """
                         }
