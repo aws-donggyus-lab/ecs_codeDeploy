@@ -69,7 +69,7 @@ pipeline {
                             def containerName = lines[1]
                             def containerPort = lines[2]
 
-                            // Read and modify appspec.yml
+                            // Read and modify appspec.yaml
                             def specFile = "appspec.yaml"
                             def content = readFile(file: specFile)
                             content = content.replace("&&CD_APP&&", env.CD_APP)
@@ -80,7 +80,7 @@ pipeline {
                             writeFile(file: specFile, text: content)
 
                             sh """
-                                cat appspec.yml
+                                cat appspec.yaml
                                 aws deploy create-deployment \
                                     --application-name ${env.CD_APP} \
                                     --deployment-group-name ${env.CD_GROUP_NAME} \
