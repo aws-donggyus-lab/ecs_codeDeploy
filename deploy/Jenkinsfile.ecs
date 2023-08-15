@@ -9,7 +9,7 @@ pipeline {
         ECS_SERVICE = "todolist-container"
         ECS_TASK_DEF = "todolist-family"
 
-        AWS_CREDENTIALS = "leedonggyu-aws-credentials"
+        AWS_CREDENTIALS = "aws_credentials"
     }
 
     stages {
