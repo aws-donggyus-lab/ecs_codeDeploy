@@ -80,7 +80,7 @@ pipeline {
 
                             sh """
                                 cat appspec.yml
-                                aws deploy create-deployment --application-name \${env.CD_APP} --deployment-group-name \${env.CD_GROUP_NAME} --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\"
+                                aws deploy create-deployment --application-name \${env.CD_APP} --deployment-group-name \${env.CD_GROUP_NAME} --revision revisionType=AppSpecContent,value=\"\$(cat appspec.yml)\"
                             """
                         }
                     }
