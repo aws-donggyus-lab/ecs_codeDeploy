@@ -70,7 +70,7 @@ pipeline {
                             def containerPort = lines[2]
 
                             // Read and modify appspec.yml
-                            def specFile = "appspec.yml"
+                            def specFile = "appspec.yaml"
                             def content = readFile(file: specFile)
                             content = content.replace("&&CD_APP&&", env.CD_APP)
                             content = content.replace("&&CD_GROUP_NAME&&", env.CD_GROUP_NAME)
@@ -81,7 +81,11 @@ pipeline {
 
                             sh """
                                 cat appspec.yml
-                                aws deploy create-deployment --application-name ${env.CD_APP} --deployment-group-name ${env.CD_GROUP_NAME} --revision revisionType=AppSpecContent,value="\$(cat appspec.yml)\"
+                                aws deploy create-deployment \
+                                    --application-name ${env.CD_APP} \
+                                    --deployment-group-name ${env.CD_GROUP_NAME} \
+                                    --cli-input-yaml file:appspec.yaml"
+                                    --region ${env.REGION}
                             """
                         }
                     }
