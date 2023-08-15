@@ -78,8 +78,10 @@ pipeline {
                             writeFile(file: specFile, content.replace("&&CONTAINER_NAME&&", containerName))
                             writeFile(file: specFile, content.replace("&&CONTAINER_PORT&&", containerPort))
 
-                            sh "cat appspec.yml"
-                            sh "aws deploy create-deployment --application-name ${env.CD_APP} --deployment-group-name ${env.CD_GROUP_NAME} --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
+                            sh """
+                                cat appspec.yml
+                                aws deploy create-deployment --application-name ${env.CD_APP} --deployment-group-name ${env.CD_GROUP_NAME} --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\"
+                            """
                         }
                     }
                 }
