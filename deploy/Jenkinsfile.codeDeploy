@@ -1,21 +1,35 @@
 pipeline {
     agent any
 
-    environment { 
-        ECS_CLUSTER = ""
-        ECS_SERVICE = ""
-        ECS_TASK_DEF = ""
-    }    
+    environment {
+        REGION = "ap-northeast-2"
+        ECR_REPOSITORY = "182024812696.dkr.ecr.${env.REGION}.amazonaws.com/todolist-repository"
 
-    // 원래는 다 환경변수에 담아서 .. 진행하자..
+        ECS_CLUSTER = "todolist-cluster-codedeploy"
+        ECS_SERVICE = "todolist-container"
+        ECS_TASK_DEF = "todolist-codedeploy-family"
+
+        AWS_CREDENTIALS = "aws_credentials"
+    }
 
     stages {
         stage('Push ECR') {
             steps {
                 dir("apiserver") {
                     script {
+                        sh "docker build -t build-${env.BUILD_ID} ."
+                        sh "docker tag build-${env.BUILD_ID} ${env.ECR_REPOSITORY}:build-${env.BUILD_ID}"
+                    }
+                }
+            }
+        }
+
+        stage("Register ECS") {
+            steps {
+                dir("deploy") {
+                    script {
                         def searchString = "&&BUILD_ID&&"
-                        def pipelineScriptPath = "deploy/task-definition.json"
+                        def pipelineScriptPath = "task-definition.json"
                         
                         // Read to Json file
                         def pipelineScriptContent = readFile(file: pipelineScriptPath)
@@ -24,36 +38,28 @@ pipeline {
                         def updatedPipelineScript = pipelineScriptContent.replace(searchString, env.BUILD_ID)
                         writeFile(file: pipelineScriptPath, text: updatedPipelineScript)
 
-                        sh "docker build -t build-${env.BUILD_ID} ."
-                        sh "docker tag build-${env.BUILD_ID} ${env.ECR_REPOSITORY}/${env.CONTINAER_NAME}-${env.BUILD_ID}"
-
-                        docker.withRegistry("https://${env.ECR_REPOSITORY}/${env.CONTINAER_NAME}-${env.BUILD_ID}", "ecr:${env.REGION}:${env.CREDENTIALS}") {
-                            docker.image("${env.ECR_REPOSITORY}/${env.CONTINAER_NAME}-${env.BUILD_ID}").push()
-                        }
-                    }
-                }₩
-            }
-        }
-
-        // stage("Deploy ECS via CodeDeploy"
-            steps {
-                dir("apiserver/deploy") {
-                    script {
-                        def cdAppName = "$$CD_APP_NAME$$"
-                        def cdDefGroupName = "$$CD_DEP_GROUP_NAME$$"
-                        def cdTaskDef = "$$CD_TASK_DEF$$"
-                        def cdContainerName = "$$CD_CONTAINER_NAME$$"
-                        def cdContainerPort = "$$CD_CONTAINER_PORT$$"
-
-                        // Read to Json File
-                        def appSpecContent = readFile(file: "appspec.yml")
-
-
-                        withAWS(credentials: "${env.CREDENTIALS}", region: "${env.REGION}") {
-                            sh "aws deploy create-deployment --application-name todolist-ecs-app --deployment-group-name todolist-ecs-deployment-group --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
+                        docker.withRegistry("https://${env.ECR_REPOSITORY}:build-${env.BUILD_ID}", "ecr:${env.REGION}:${env.AWS_CREDENTIALS}") {
+                            docker.image("${env.ECR_REPOSITORY}:build-${env.BUILD_ID}").push()
                         }
                     }
                 }
             }
         }
+
+        stage("Deploy ECS via CodeDeploy") {
+            steps {
+                dir("deploy") {
+                    script {
+                        withAWS(credentials: "${env.AWS_CREDENTIALS}", region: "${env.REGION}") {
+                            def revision = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.revision'").trim()
+
+                            echo "${revigion}"
+
+                            // sh "aws deploy create-deployment --application-name YourCodeDeployApplicationName --deployment-group-name YourDeploymentGroupName --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
