@@ -1,0 +1,15 @@
+applicationName: $$CD_APP##
+deploymentGroupName: $$CD_GROUP_NAME##
+revision:
+  revisionType: AppSpecContent
+  appSpecContent:
+    content: |
+      version: 0
+      Resources:
+        - TargetService:
+            Type: AWS::ECS::Service
+            Properties:
+              TaskDefinition: $$TASK_DEF$$
+              LoadBalancerInfo:
+                ContainerName: $$CONTAINER_NAME$$
+                ContainerPort: $$CONTAINER_PORT$$

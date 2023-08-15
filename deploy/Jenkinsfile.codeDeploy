@@ -53,7 +53,7 @@ pipeline {
                         withAWS(credentials: "${env.AWS_CREDENTIALS}", region: "${env.REGION}") {
                             def revision = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.revision'").trim()
 
-                            echo "${revigion}"
+                            echo "${revision}"
 
                             // sh "aws deploy create-deployment --application-name YourCodeDeployApplicationName --deployment-group-name YourDeploymentGroupName --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
                         }
