@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment { 
+        ECS_CLUSTER = ""
+        ECS_SERVICE = ""
+        ECS_TASK_DEF = ""
+    }    
+
+    // 원래는 다 환경변수에 담아서 .. 진행하자..
+
+    stages {
+        stage('Push ECR') {
+            steps {
+                dir("apiserver") {
+                    script {
+                        def searchString = "&&BUILD_ID&&"
+                        def pipelineScriptPath = "deploy/task-definition.json"
+                        
+                        // Read to Json file
+                        def pipelineScriptContent = readFile(file: pipelineScriptPath)
+
+                        // Replace the string
+                        def updatedPipelineScript = pipelineScriptContent.replace(searchString, env.BUILD_ID)
+                        writeFile(file: pipelineScriptPath, text: updatedPipelineScript)
+
+                        sh "docker build -t build-${env.BUILD_ID} ."
+                        sh "docker tag build-${env.BUILD_ID} ${env.ECR_REPOSITORY}/${env.CONTINAER_NAME}-${env.BUILD_ID}"
+
+                        docker.withRegistry("https://${env.ECR_REPOSITORY}/${env.CONTINAER_NAME}-${env.BUILD_ID}", "ecr:${env.REGION}:${env.CREDENTIALS}") {
+                            docker.image("${env.ECR_REPOSITORY}/${env.CONTINAER_NAME}-${env.BUILD_ID}").push()
+                        }
+                    }
+                }₩
+            }
+        }
+
+        // stage("Deploy ECS via CodeDeploy"
+            steps {
+                dir("apiserver/deploy") {
+                    script {
+                        def cdAppName = "$$CD_APP_NAME$$"
+                        def cdDefGroupName = "$$CD_DEP_GROUP_NAME$$"
+                        def cdTaskDef = "$$CD_TASK_DEF$$"
+                        def cdContainerName = "$$CD_CONTAINER_NAME$$"
+                        def cdContainerPort = "$$CD_CONTAINER_PORT$$"
+
+                        // Read to Json File
+                        def appSpecContent = readFile(file: "appspec.yml")
+
+
+                        withAWS(credentials: "${env.CREDENTIALS}", region: "${env.REGION}") {
+                            sh "aws deploy create-deployment --application-name todolist-ecs-app --deployment-group-name todolist-ecs-deployment-group --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
+                        }
+                    }
+                }
+            }
+        }
+}

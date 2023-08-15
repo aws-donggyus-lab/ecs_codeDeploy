@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        REGION = "ap-northeast-2"
+        ECR_REPOSITORY = "182024812696.dkr.ecr.${env.REGION}.amazonaws.com/todolist-repository"
+
+        ECS_CLUSTER = "todolist-cluster-poc"
+        ECS_SERVICE = "todolist-container"
+        ECS_TASK_DEF = "todolist-family"
+
+        AWS_CREDENTIALS = "leedonggyu-aws-credentials"
+    }
+
+    stages {
+        stage('Push ECR') {
+            steps {
+                dir("apiserver") {
+                    script {
+                        def searchString = "&&BUILD_ID&&"
+                        def pipelineScriptPath = "deploy/task-definition.json"
+                        
+                        // Read to Json file
+                        def pipelineScriptContent = readFile(file: pipelineScriptPath)
+
+                        // Replace the string
+                        def updatedPipelineScript = pipelineScriptContent.replace(searchString, env.BUILD_ID)
+                        writeFile(file: pipelineScriptPath, text: updatedPipelineScript)
+
+                        sh "docker build -t build-${env.BUILD_ID} ."
+                        sh "docker tag build-${env.BUILD_ID} ${env.ECR_REPOSITORY}:build-${env.BUILD_ID}"
+
+                        docker.withRegistry("https://${env.ECR_REPOSITORY}:build-${env.BUILD_ID}", "ecr:${env.REGION}:${env.AWS_CREDENTIALS}") {
+                            docker.image("${env.ECR_REPOSITORY}:build-${env.BUILD_ID}").push()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Deploy use ECS (Rolling Update)
+        stage("Deploy ECS") {
+            steps {
+                dir("apiserver/deploy") {
+                    script {
+                        withAWS(credentials:"${env.AWS_CREDENTIALS}", region:"${env.REGION}") {
+                            sh "aws ecs register-task-definition --cli-input-json file://task-definition.json"          
+                            sh "aws ecs update-service --cluster ${env.ECS_CLUSTER} --service ${env.ECS_SERVICE} --task-definition ${env.ECS_TASK_DEF}"
+                        }
+                    }
+                }
+            }
+        }
+
+        // stage("Deploy ECS via CodeDeploy") {
+        //     steps {
+        //         dir("apiserver/deploy") {
+        //             script {
+        //                 withAWS(credentials: "leedonggyu-aws-credentials", region: "ap-northeast-2") {
+        //                     sh "aws deploy create-deployment --application-name YourCodeDeployApplicationName --deployment-group-name YourDeploymentGroupName --revision revisionType=AppSpecContent,value=\"$(cat appspec.yml)\""
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+    }
+}
