@@ -51,8 +51,13 @@ pipeline {
                 dir("deploy") {
                     script {
                         withAWS(credentials: "${env.AWS_CREDENTIALS}", region: "${env.REGION}") {
-                            sh "aws ecs register-task-definition --cli-input-json file://task-definition.json"
-                            // def revision = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.revision'").trim()
+
+                            // def revision = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn'").trim()
+
+                            def output = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn, .taskDefinition.containerDefinitions[] | .name, .portMappings[] .containerPort'").trim()
+                            echo "${output}"
+
+
 
                             // echo "${revision}"
 
