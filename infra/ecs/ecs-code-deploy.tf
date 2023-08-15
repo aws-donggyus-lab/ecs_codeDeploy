@@ -93,6 +93,7 @@ resource "aws_ecs_service" "service-codedeploy" {
 
   lifecycle {
     ignore_changes = [
+    #   "load_balancer",
       "task_definition",
     ]
   }

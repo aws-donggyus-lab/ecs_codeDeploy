@@ -13,3 +13,4 @@ revision:
               LoadBalancerInfo:
                 ContainerName: &&CONTAINER_NAME&&
                 ContainerPort: &&CONTAINER_PORT&&
+                TargetGroup: green-tg-bluegreen
