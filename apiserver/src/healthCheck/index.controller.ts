@@ -9,7 +9,8 @@ class HealthCheckController {
   }
 
   healthCheck(req: Request, res: Response) {
-    return res.status(200).json('success ===> new version 1.0')
+    console.log('success ===> new version 1.0')
+    return res.status(200).json('success')
   }
 }
 
