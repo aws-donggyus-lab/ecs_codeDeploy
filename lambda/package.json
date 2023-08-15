@@ -1,0 +1,18 @@
+{
+  "name": "lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip-file": "npm install --production && zip -r function.zip .",
+    "update-zip": "aws lambda update-function-code --function-name helloWorld-2 --zip-file fileb://function.zip",
+    "deploy": "npm run zip-file && npm run update-zip"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/webhook": "^6.1.0"
+  }
+}
