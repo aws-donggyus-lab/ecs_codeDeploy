@@ -54,7 +54,7 @@ pipeline {
 
                             // def revision = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn'").trim()
 
-                            def output = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn, .taskDefinition.containerDefinitions[0] | .name, .portMappings[0] .containerPort'").trim()
+                            def output = sh(returnStdout: true, script: "aws ecs register-task-definition --cli-input-json file://task-definition.json | jq -r '.taskDefinition.taskDefinitionArn, .taskDefinition.containerDefinitions[0].name, .taskDefinition.containerDefinitions[0].portMappings[0].containerPort'").trim()
                             echo "${output}"
 
 
