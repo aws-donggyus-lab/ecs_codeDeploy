@@ -17,8 +17,19 @@ pipeline {
             steps {
                 dir("apiserver") {
                     script {
+                        sh "docker build -t build-${env.BUILD_ID} ."
+                        sh "docker tag build-${env.BUILD_ID} ${env.ECR_REPOSITORY}:build-${env.BUILD_ID}"
+                    }
+                }
+            }
+        }
+
+        stage("Register ECS") {
+            steps {
+                dir("deploy") {
+                    script {
                         def searchString = "&&BUILD_ID&&"
-                        def pipelineScriptPath = "deploy/task-definition.json"
+                        def pipelineScriptPath = "task-definition.json"
                         
                         // Read to Json file
                         def pipelineScriptContent = readFile(file: pipelineScriptPath)
@@ -26,9 +37,6 @@ pipeline {
                         // Replace the string
                         def updatedPipelineScript = pipelineScriptContent.replace(searchString, env.BUILD_ID)
                         writeFile(file: pipelineScriptPath, text: updatedPipelineScript)
-
-                        sh "docker build -t build-${env.BUILD_ID} ."
-                        sh "docker tag build-${env.BUILD_ID} ${env.ECR_REPOSITORY}:build-${env.BUILD_ID}"
 
                         docker.withRegistry("https://${env.ECR_REPOSITORY}:build-${env.BUILD_ID}", "ecr:${env.REGION}:${env.AWS_CREDENTIALS}") {
                             docker.image("${env.ECR_REPOSITORY}:build-${env.BUILD_ID}").push()
