@@ -75,8 +75,8 @@ resource "aws_ecs_service" "service-codedeploy" {
 
   network_configuration {
     assign_public_ip = true
-    subnets = values(local.public_subnets)
-    security_groups = [aws_security_group.todolist-ecs-sg.id]
+    subnets          = values(local.public_subnets)
+    security_groups  = [aws_security_group.todolist-ecs-sg.id]
   }
 
   force_new_deployment = true
@@ -91,10 +91,11 @@ resource "aws_ecs_service" "service-codedeploy" {
     container_port   = 3000
   }
 
-  ## 서비스를 중단하지 않고, 새로운 서비스가 활성화된 경우에만 폐기된다.
-#   lifecycle {
-#     create_before_destroy = true
-#   }
+  lifecycle {
+    ignore_changes = [
+      "task_definition",
+    ]
+  }
 }
 
 
@@ -145,12 +146,12 @@ resource "aws_codedeploy_deployment_group" "ecs_code_deploy_group" {
 
       ## Blue
       target_group {
-        name = aws_lb_target_group.blue-2.arn
+        name = aws_lb_target_group.blue-2.name
       }
 
       ## Green
       target_group {
-        name = aws_lb_target_group.green-2.arn
+        name = aws_lb_target_group.green-2.name
       }
     }
   }

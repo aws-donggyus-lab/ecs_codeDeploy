@@ -115,7 +115,7 @@ resource "aws_lb" "alb-2" {
 ### aws target group
 ####################################################################
 resource "aws_lb_target_group" "blue-2" {
-  name        = "todolist-blue-tg-bluegreen"
+  name        = "blue-tg-bluegreen"
   port        = 3000
   protocol    = "HTTP"
   vpc_id      = local.vpc.id
@@ -135,7 +135,7 @@ resource "aws_lb_target_group" "blue-2" {
 }
 
 resource "aws_lb_target_group" "green-2" {
-  name        = "todolist-green-tg-bluegreen"
+  name        = "green-tg-bluegreen"
   port        = 3000
   protocol    = "HTTP"
   vpc_id      = local.vpc.id

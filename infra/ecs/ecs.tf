@@ -101,15 +101,15 @@ resource "aws_ecs_service" "service" {
 
   network_configuration {
     assign_public_ip = true
-    subnets = values(local.public_subnets)
-    security_groups = [aws_security_group.todolist-ecs-sg.id]
+    subnets          = values(local.public_subnets)
+    security_groups  = [aws_security_group.todolist-ecs-sg.id]
   }
 
   force_new_deployment = true
 
-#   deployment_controller {
-#     type = "CODE_DEPLOY"
-#   }
+  #   deployment_controller {
+  #     type = "CODE_DEPLOY"
+  #   }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.green.arn
@@ -118,7 +118,7 @@ resource "aws_ecs_service" "service" {
   }
 
   ## 서비스를 중단하지 않고, 새로운 서비스가 활성화된 경우에만 폐기된다.
-#   lifecycle {
-#     create_before_destroy = true
-#   }
+  #   lifecycle {
+  #     create_before_destroy = true
+  #   }
 }
