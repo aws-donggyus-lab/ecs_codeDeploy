@@ -49,7 +49,7 @@ pipeline {
         // Deploy use ECS (Rolling Update)
         stage("Deploy ECS") {
             steps {
-                dir("apiserver/deploy") {
+                dir("deploy") {
                     script {
                         withAWS(credentials:"${env.AWS_CREDENTIALS}", region:"${env.REGION}") {
                             sh "aws ecs register-task-definition --cli-input-json file://task-definition.json"          
