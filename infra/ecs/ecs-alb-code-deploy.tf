@@ -171,7 +171,7 @@ resource "aws_ecs_service" "service-codedeploy" {
     security_groups  = [aws_security_group.todolist-ecs-sg.id]
   }
 
-  force_new_deployment = true
+  force_new_deployment = false
 
   deployment_controller {
     type = "CODE_DEPLOY"
