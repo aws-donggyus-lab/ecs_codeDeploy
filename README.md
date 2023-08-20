@@ -12,4 +12,4 @@
 
   - infra/ecs-alb-code-deploy.tf
 
-- ECS ALB (pipeline-todolist-alb-979285035.ap-northeast-2.elb.amazonaws.com)
+- ECS ALB (alb-bluegreen-505545945.ap-northeast-2.elb.amazonaws.com)

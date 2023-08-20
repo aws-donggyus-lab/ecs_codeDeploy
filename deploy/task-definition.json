@@ -37,6 +37,22 @@
         {
           "name": "DB_PASSWORD",
           "value": "12341234"
+        },
+        {
+          "name": "VERSION",
+          "value": "&&BUILD_ID&&"
+        },
+        {
+          "name": "NAME",
+          "value": "leedonggyu"
+        },
+        {
+          "name": "AGE",
+          "value": "30"
+        },
+        {
+          "name": "PER",
+          "value": "Good"
         }
       ],
       "mountPoints": [],
