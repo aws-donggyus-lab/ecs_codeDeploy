@@ -6,11 +6,21 @@ class HealthCheckController {
   constructor() {
     this.router = Router()
     this.router.get('/health', reqMiddleware, this.healthCheck)
+    this.router.get('/env', reqMiddleware, this.outputEnv)
   }
 
   healthCheck(req: Request, res: Response) {
     console.log('success ===> new version 1.0')
     return res.status(200).json('success')
+  }
+
+  outputEnv(req: Request, res: Response) {
+    console.log({
+      port: process.env.PORT,
+      name: process.env.NAME,
+      age: process.env.AGE,
+      per: process.env.PER,
+    })
   }
 }
 
