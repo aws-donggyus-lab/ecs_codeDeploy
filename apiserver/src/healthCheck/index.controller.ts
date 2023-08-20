@@ -23,6 +23,14 @@ class HealthCheckController {
       age: process.env.AGE,
       per: process.env.PER,
     })
+
+    return res.status(200).json({
+      date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      port: process.env.PORT,
+      name: process.env.NAME,
+      age: process.env.AGE,
+      per: process.env.PER,
+    })
   }
 }
 
