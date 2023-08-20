@@ -37,6 +37,10 @@
           "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_HOST::"
         },
         {
+          "name": "DB_USER",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_USER::"
+        },
+        {
           "name": "DB_PASSWORD",
           "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_PASSWORD::"
         },
