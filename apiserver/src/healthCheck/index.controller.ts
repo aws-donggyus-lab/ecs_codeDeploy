@@ -10,12 +10,12 @@ class HealthCheckController {
     this.router.get('/environment', reqMiddleware, this.outputEnv)
   }
 
-  healthCheck(req: Request, res: Response) {
+  async healthCheck(req: Request, res: Response) {
     console.log('success ===> new version 1.0')
     return res.status(200).json('success')
   }
 
-  outputEnv(req: Request, res: Response) {
+  async outputEnv(req: Request, res: Response) {
     console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'))
     console.log({
       port: process.env.PORT,
