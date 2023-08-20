@@ -41,18 +41,20 @@
         {
           "name": "VERSION",
           "value": "&&BUILD_ID&&"
-        },
+        }
+      ],
+      "secrets": [
         {
           "name": "NAME",
-          "value": "leedonggyu"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:NAME"
         },
         {
           "name": "AGE",
-          "value": "30"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:AGE"
         },
         {
           "name": "PER",
-          "value": "Good"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:PER"
         }
       ],
       "mountPoints": [],
