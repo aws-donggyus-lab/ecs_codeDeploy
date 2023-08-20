@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Request, Response, Router } from 'express'
 import { reqMiddleware } from '../middlewares/reqMiddleware'
 class HealthCheckController {
@@ -15,6 +16,7 @@ class HealthCheckController {
   }
 
   outputEnv(req: Request, res: Response) {
+    console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'))
     console.log({
       port: process.env.PORT,
       name: process.env.NAME,
