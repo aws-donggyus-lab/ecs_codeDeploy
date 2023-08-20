@@ -22,7 +22,7 @@
       "secrets": [
         {
           "name": "DB_NAME",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_NAME::"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_NAME"
         },
         {
           "name": "PORT",

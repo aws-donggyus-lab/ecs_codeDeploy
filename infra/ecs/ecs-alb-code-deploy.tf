@@ -202,52 +202,52 @@ resource "aws_codedeploy_app" "ecs_code_deploy" {
 
 resource "aws_codedeploy_deployment_group" "ecs_code_deploy_group" {
   app_name               = aws_codedeploy_app.ecs_code_deploy.name
-  deployment_group_name  = "bluegreen-deploy"
-  deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
-  service_role_arn       = local.codeDeploy_iam
+  deployment_group_name  = "bluegreen-deploy"  # 배포 그룹의 이름 설정
+  deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"  # 배포 구성 설정
+  service_role_arn       = local.codeDeploy_iam  # 서비스 역할의 ARN 설정
 
   blue_green_deployment_config {
     deployment_ready_option {
-      action_on_timeout = "CONTINUE_DEPLOYMENT"
+      action_on_timeout = "CONTINUE_DEPLOYMENT"  # 타임아웃 시 동작 설정
     }
 
     terminate_blue_instances_on_deployment_success {
-      action                           = "TERMINATE"
-      termination_wait_time_in_minutes = 1
+      action                           = "TERMINATE"  # 성공한 경우 Blue 인스턴스 종료 설정
+      termination_wait_time_in_minutes = 1  # 종료 대기 시간 설정
     }
   }
 
   ecs_service {
-    cluster_name = aws_ecs_cluster.cluster-codedeploy.name
-    service_name = aws_ecs_service.service-codedeploy.name
+    cluster_name = aws_ecs_cluster.cluster-codedeploy.name  # ECS 클러스터 이름 설정
+    service_name = aws_ecs_service.service-codedeploy.name  # ECS 서비스 이름 설정
   }
 
   deployment_style {
-    deployment_option = "WITH_TRAFFIC_CONTROL"
-    deployment_type   = "BLUE_GREEN"
+    deployment_option = "WITH_TRAFFIC_CONTROL"  # 트래픽 제어 옵션 설정
+    deployment_type   = "BLUE_GREEN"  # 블루/그린 배포 설정
   }
+  
   auto_rollback_configuration {
-    enabled = true
-    events  = ["DEPLOYMENT_FAILURE"]
+    enabled = false  # 자동 롤백 활성화 여부 설정
+    events  = ["DEPLOYMENT_FAILURE"]  # 롤백 이벤트 설정
   }
 
   load_balancer_info {
     target_group_pair_info {
       prod_traffic_route {
-        listener_arns = [aws_lb_listener.listener-bluegreen.arn]
+        listener_arns = [aws_lb_listener.listener-bluegreen.arn]  # 리스너 ARN 설정
       }
 
       ## Blue
       target_group {
-        name = aws_lb_target_group.blue-bluegreen.name
+        name = aws_lb_target_group.blue-bluegreen.name  # Blue 타겟 그룹 이름 설정
       }
 
       ## Green
       target_group {
-        name = aws_lb_target_group.green-bluegreen.name
+        name = aws_lb_target_group.green-bluegreen.name  # Green 타겟 그룹 이름 설정
       }
     }
   }
 }
-
 
