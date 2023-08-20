@@ -16,6 +16,9 @@
 
 ## use AWS Secret Manager
 
+- AWS secret Manager는 -> KMS가 보안을 지켜준다.
+- Access Token 같은 경우 사용해도 될듯 (계속 변하게도 해준다...)
+
 - 원래의 Task-Definition
 
 ```json
@@ -123,3 +126,25 @@
     })
   }
   ```
+
+  2. secerts 블록에 넣어야 함
+
+  ```
+  "secrets": [
+        {
+          "name": "NAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:NAME"
+        },
+        {
+          "name": "AGE",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:AGE"
+        },
+        {
+          "name": "PER",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:PER"
+        }
+      ]
+  ```
+
+- S3 bucket에 .env를 넣는다면
+  - environmentsFiles에 넣어도 되는데 과연 S3가 보안적으로 이슈가 없을까?
