@@ -7,7 +7,7 @@ class HealthCheckController {
   constructor() {
     this.router = Router()
     this.router.get('/health', reqMiddleware, this.healthCheck)
-    this.router.get('/env', reqMiddleware, this.outputEnv)
+    this.router.get('/environment', reqMiddleware, this.outputEnv)
   }
 
   healthCheck(req: Request, res: Response) {
