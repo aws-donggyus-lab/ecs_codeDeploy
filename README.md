@@ -144,18 +144,23 @@
   "secrets": [
         {
           "name": "NAME",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:NAME"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:NAME::"
         },
         {
           "name": "AGE",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:AGE"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:AGE::"
         },
         {
           "name": "PER",
-          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:PER"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:PER::"
         }
-      ]
+      ],
   ```
+
+  3. 특징
+
+  - 민감한 자료들은 env로 관리...
+  - env수정해도 배포 따로 안해도 될듯???
 
 - S3 bucket에 .env를 넣는다면
   - environmentsFiles에 넣어도 되는데 과연 S3가 보안적으로 이슈가 없을까?
