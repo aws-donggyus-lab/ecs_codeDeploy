@@ -113,14 +113,20 @@
       path = "/"
 
       policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [
+      Version = "2012-10-17"
+      Statement = [
         {
           "Effect" : "Allow",
           "Action" : [
-            "secretsmanager:GetSecretValue"
+            "ssm:GetParameters",
+            "secretsmanager:GetSecretValue",
+            "kms:Decrypt"
           ],
-          "Resource" : "*"
+          "Resource" : [
+            "arn:aws:ssm:*",
+            "arn:aws:secretsmanager:*",
+            "arn:aws:kms:*"
+          ]
         }
       ]
     })

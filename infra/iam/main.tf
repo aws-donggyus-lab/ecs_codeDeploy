@@ -74,9 +74,15 @@ resource "aws_iam_policy" "secret_manager" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "secretsmanager:GetSecretValue"
+          "ssm:GetParameters",
+          "secretsmanager:GetSecretValue",
+          "kms:Decrypt"
         ],
-        "Resource" : "*"
+        "Resource" : [
+          "arn:aws:ssm:*",
+          "arn:aws:secretsmanager:*",
+          "arn:aws:kms:*"
+        ]
       }
     ]
   })
