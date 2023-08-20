@@ -163,4 +163,9 @@
   - env수정해도 배포 따로 안해도 될듯???
 
 - S3 bucket에 .env를 넣는다면
+
   - environmentsFiles에 넣어도 되는데 과연 S3가 보안적으로 이슈가 없을까?
+
+- codeDeploy 문제
+  - blue + green 배포 시 green 상태에서 롤백하면 -> blue로 타겟이 됨... 그상태에서 terraform apply 하면 난리남 (ecs service의 alb가 없어짐..)
+  - blue가 default로 되어있다면 -> blue 상태에서 배포 -> 배포 그리고 롤백하면 green으로 바뀜
