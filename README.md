@@ -107,6 +107,11 @@
 
   1. iam에 추가 secretemanagers 추가해야함
 
+  ```
+    추가 안해주면 에러남...
+    ResourceInitializationError: unable to pull secrets or registry auth: execution resource retrieval failed: unable to retrieve secret from asm: service call has been retried 1 time(s): failed to fetch secret arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a/NAME from secrets manager: ResourceNotFoundException: Secrets Manager can't find the specified secret.
+  ```
+
   ```terraform
     resource "aws_iam_policy" "secret_manager" {
       name = "secret_manager"
