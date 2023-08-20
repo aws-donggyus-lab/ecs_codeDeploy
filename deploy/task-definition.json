@@ -15,28 +15,46 @@
       "essential": true,
       "environment": [
         {
+          "name": "VERSION",
+          "value": "&&BUILD_ID&&"
+        }
+      ],
+      "secrets": [
+        {
           "name": "DB_NAME",
-          "value": "todomini"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_NAME::"
         },
         {
           "name": "PORT",
-          "value": "3000"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:PORT::"
         },
         {
           "name": "DB_PORT",
-          "value": "3306"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_PORT::"
         },
         {
           "name": "DB_HOST",
-          "value": "leedonggyu-todolist-rds.cklbb0dz81o2.ap-northeast-2.rds.amazonaws.com"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_HOST::"
         },
         {
           "name": "DB_USER",
-          "value": "root"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_USER::"
         },
         {
           "name": "DB_PASSWORD",
-          "value": "12341234"
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:DB_PASSWORD::"
+        },
+        {
+          "name": "NAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:NAME::"
+        },
+        {
+          "name": "AGE",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:AGE::"
+        },
+        {
+          "name": "PER",
+          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:182024812696:secret:ecs/todolist/env-fRgf7a:PER::"
         }
       ],
       "mountPoints": [],

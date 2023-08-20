@@ -64,9 +64,33 @@ resource "aws_iam_policy" "get_ecr_list" {
   })
 }
 
+resource "aws_iam_policy" "secret_manager" {
+  name = "secret_manager"
+  path = "/"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:GetParameters",
+          "secretsmanager:GetSecretValue",
+          "kms:Decrypt"
+        ],
+        "Resource" : [
+          "arn:aws:ssm:*",
+          "arn:aws:secretsmanager:*",
+          "arn:aws:kms:*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "cloudwatch_group_attachment" {
   for_each = {
-    for i, v in [aws_iam_policy.cloudwatch-group, aws_iam_policy.get_ecr_list] :
+    for i, v in [aws_iam_policy.cloudwatch-group, aws_iam_policy.get_ecr_list, aws_iam_policy.secret_manager] :
     i => v
   }
 
