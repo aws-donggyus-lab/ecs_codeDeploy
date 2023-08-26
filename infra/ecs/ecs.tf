@@ -118,9 +118,9 @@ resource "aws_ecs_service" "service" {
   }
 
   ## 서비스를 중단하지 않고, 새로운 서비스가 활성화된 경우에만 폐기된다.
-    lifecycle {
-      ignore_changes = [ 
-        task_definition
-       ]
-    }
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
 }

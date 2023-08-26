@@ -172,3 +172,17 @@
   - codeDeploy 상태에서 ecs 문제가 생겼을때, codeDeploy 상태에서 멈춤
   - blue + green 배포 시 green 상태에서 롤백하면 -> blue로 타겟이 됨... 그상태에서 terraform apply 하면 난리남 (ecs service의 alb가 없어짐..)
   - blue가 default로 되어있다면 -> blue 상태에서 배포 -> 배포 그리고 롤백하면 green으로 바뀜
+
+## (ECS) Rolling Update vs Blue/Green 배포 Benchmark
+
+1.  두 케이스 모두 같은 이미지사용 (/apiserver/Dockerfile)
+2.  ECS DeploymentChange 값으로 측정 (EventBridge -> Lambda -> Slack Notification)
+3.  Deploy (Bluegreen Refactroing)
+
+- Deregistration delay (등록 취소 지연) 값 300 -> 5
+- 등록취소가 진행중 일때, 대상에서 실행중인 요청이 모두 완료될때까지 대기함 -> 느린업로드나 스트리밍 연결에서는 Requied
+
+| seconds                        | Rolling Update | Blue/green (AllAtOnce) |
+| ------------------------------ | -------------- | ---------------------- |
+| Deploy (Default)               | 163 (seconds)  | 170 (seconds)          |
+| Deploy (Deregistration deploy) | 133 (seconds)  | 143 (seconds)          |
